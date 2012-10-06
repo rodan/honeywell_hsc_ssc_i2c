@@ -6,9 +6,9 @@
 // these defaults are valid for the HSCMRNN030PA2A3 chip
 #define SLAVE_ADDR 0x28
 #define OUTPUT_MIN 0
-#define OUTPUT_MAX 0x3fff       // 2^14
+#define OUTPUT_MAX 0x3fff       // 2^14 - 1
 #define PRESSURE_MIN 0.0        // min is 0 for sensors that give absolute values
-#define PRESSURE_MAX 206842.7   // 30Psi (and we want results in pascals)
+#define PRESSURE_MAX 206842.7   // 30psi (and we want results in pascals)
 
 unsigned long prev = 0, interval = 5000;
 
