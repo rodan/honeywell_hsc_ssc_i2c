@@ -10,7 +10,7 @@
 #define PRESSURE_MIN 0.0        // min is 0 for sensors that give absolute values
 #define PRESSURE_MAX 206842.7   // 30Psi (and we want results in pascals)
 
-unsigned long prev, interval = 5000;
+unsigned long prev = 0, interval = 5000;
 
 void setup()
 {
@@ -29,27 +29,31 @@ void loop()
 
     if ((now - prev > interval) && (Serial.available() <= 0)) {
 
-        ps_get_raw(SLAVE_ADDR, &ps);
-        Serial.println("raw values follow:");
-        Serial.print("status  ");
-        Serial.println(ps.status, DEC);
-        Serial.print("bridge_data  ");
-        Serial.println(ps.bridge_data, DEC);
-        Serial.print("temperature_data  ");
-        Serial.println(ps.temperature_data, DEC);
-        Serial.println("");
-
-        ps_convert(ps, &p, &t, OUTPUT_MIN, OUTPUT_MAX, PRESSURE_MIN,
-                   PRESSURE_MAX);
-        // floats cannot be easily printed out
-        dtostrf(p, 2, 2, p_str);
-        dtostrf(t, 2, 2, t_str);
-        Serial.print("pressure     ");
-        Serial.println(p_str);
-        Serial.print("temperature  ");
-        Serial.println(t_str);
-        Serial.println("");
-
         prev = now;
+
+        if ( ps_get_raw(SLAVE_ADDR, &ps) != 0 ) {
+            Serial.print("err status is non-zero: ");
+            Serial.println(ps.status, BIN);
+        } else {
+            Serial.print("status      ");
+            Serial.println(ps.status, BIN);
+            Serial.print("bridge_data ");
+            Serial.println(ps.bridge_data, DEC);
+            Serial.print("temp_data   ");
+            Serial.println(ps.temperature_data, DEC);
+            Serial.println("");
+
+            ps_convert(ps, &p, &t, OUTPUT_MIN, OUTPUT_MAX, PRESSURE_MIN,
+                   PRESSURE_MAX);
+            // floats cannot be easily printed out
+            dtostrf(p, 2, 2, p_str);
+            dtostrf(t, 2, 2, t_str);
+            Serial.print("pressure    (Pa) ");
+            Serial.println(p_str);
+            Serial.print("temperature (dC) ");
+            Serial.println(t_str);
+            Serial.println("");
+        }
+
     }
 }
