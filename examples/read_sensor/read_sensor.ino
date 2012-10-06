@@ -3,7 +3,7 @@
 #include "hsc_ssc_i2c.h"
 
 // see hsc_ssc_i2c.h for a description of these values
-// these defaults are valid only for chip HSCMRNN030PA2A3
+// these defaults are valid for the HSCMRNN030PA2A3 chip
 #define SLAVE_ADDR 0x28
 #define OUTPUT_MIN 0
 #define OUTPUT_MAX 0x3fff       // 2^14
