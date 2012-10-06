@@ -14,7 +14,7 @@ unsigned long prev = 0, interval = 5000;
 
 void setup()
 {
-    delay(200);
+    delay(200);            // my particular board needs this
     Serial.begin(9600);
     Wire.begin();
 }
@@ -24,6 +24,7 @@ void loop()
     unsigned long now = millis();
     struct cs_raw ps;
     char p_str[10], t_str[10];
+    uint8_t el;
 
     float p, t;
 
@@ -31,10 +32,33 @@ void loop()
 
         prev = now;
 
-        if ( ps_get_raw(SLAVE_ADDR, &ps) != 0 ) {
-            Serial.print("err status is non-zero: ");
-            Serial.println(ps.status, BIN);
+        el = ps_get_raw(SLAVE_ADDR, &ps);
+
+        // for some reason my chip triggers a diagnostic fault
+        // on 50% of powerups without a notable impact 
+        // to the output values.
+
+        if ( el == 4 ) {
+            Serial.println("err sensor missing");
         } else {
+
+            if ( el == 3 ) {
+                Serial.print("err diagnostic fault ");
+                Serial.println(ps.status, BIN);
+            }
+            if ( el == 2 ) {
+                // if data has already been feched since the last
+                // measurement cycle
+                Serial.print("warn stale data ");
+                Serial.println(ps.status, BIN);
+            }
+            if ( el == 1 ) {
+                // chip in command mode
+                // no clue how to end up here
+                Serial.print("warn command mode ");
+                Serial.println(ps.status, BIN);
+            }
+
             Serial.print("status      ");
             Serial.println(ps.status, BIN);
             Serial.print("bridge_data ");
@@ -57,3 +81,4 @@ void loop()
 
     }
 }
+
