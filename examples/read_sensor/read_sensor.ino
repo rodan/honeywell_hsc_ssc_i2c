@@ -10,7 +10,8 @@
 #define PRESSURE_MIN 0.0        // min is 0 for sensors that give absolute values
 #define PRESSURE_MAX 206842.7   // 30psi (and we want results in pascals)
 
-unsigned long prev = 0, interval = 5000;
+uint32_t prev = 0; 
+const uint32_t interval = 5000;
 
 void setup()
 {
@@ -25,23 +26,16 @@ void loop()
     struct cs_raw ps;
     char p_str[10], t_str[10];
     uint8_t el;
-
     float p, t;
-
     if ((now - prev > interval) && (Serial.available() <= 0)) {
-
         prev = now;
-
         el = ps_get_raw(SLAVE_ADDR, &ps);
-
         // for some reason my chip triggers a diagnostic fault
         // on 50% of powerups without a notable impact 
         // to the output values.
-
         if ( el == 4 ) {
             Serial.println("err sensor missing");
         } else {
-
             if ( el == 3 ) {
                 Serial.print("err diagnostic fault ");
                 Serial.println(ps.status, BIN);
@@ -58,7 +52,6 @@ void loop()
                 Serial.print("warn command mode ");
                 Serial.println(ps.status, BIN);
             }
-
             Serial.print("status      ");
             Serial.println(ps.status, BIN);
             Serial.print("bridge_data ");
@@ -66,7 +59,6 @@ void loop()
             Serial.print("temp_data   ");
             Serial.println(ps.temperature_data, DEC);
             Serial.println("");
-
             ps_convert(ps, &p, &t, OUTPUT_MIN, OUTPUT_MAX, PRESSURE_MIN,
                    PRESSURE_MAX);
             // floats cannot be easily printed out
@@ -78,7 +70,6 @@ void loop()
             Serial.println(t_str);
             Serial.println("");
         }
-
     }
 }
 
