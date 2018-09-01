@@ -6,7 +6,7 @@
    - read raw pressure and temperature count values
    - compute absolute pressure and temperature
 
-  Author:          Petre Rodan <petre.rodan@simplex.ro>
+  Author:          Petre Rodan <2b4eda@subdimension.ro>
   Available from:  https://github.com/rodan/honeywell_hsc_ssc_i2c
   License:         GNU GPLv3
 
